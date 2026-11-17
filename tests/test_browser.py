@@ -203,8 +203,17 @@ def test_strict(browser, url, public):
     assert "token" not in saved
 
     if public:
-        ai_button(page, "status").click()
-        expect(page.locator("#aiNotice")).to_contain_text("서버", timeout=20_000)
+        with page.expect_response(lambda response: response.url.endswith("/api/status")
+                                  and response.request.method == "GET") as worker:
+            ai_button(page, "status").click()
+        status = worker.value
+        assert status.status == 200, status.status
+        origin = f"{urlsplit(url).scheme}://{urlsplit(url).netloc}"
+        assert status.headers["access-control-allow-origin"] == origin
+        body = status.json()
+        assert set(body) == {"ready"} and isinstance(body["ready"], bool)
+        expected = "서버 설정이 확인" if body["ready"] else "AI 서비스가 아직 설정되지 않았습니다."
+        expect(page.locator("#aiNotice")).to_contain_text(expected)
         assert len(api_requests) == 1 and api_requests[0].endswith("/api/status"), api_requests
     else:
         ai_button(page, "status").click()
