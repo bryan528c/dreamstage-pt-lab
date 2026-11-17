@@ -1,0 +1,10 @@
+{
+  "name": "dreamstage-pt-lab",
+  "private": true,
+  "scripts": {
+    "test:api": "wrangler deploy --config backend/wrangler.toml --dry-run --outdir .wrangler/test && node --test tests/test_api.mjs",
+    "deploy:api": "wrangler deploy --config backend/wrangler.toml"
+  },
+  "engines": {"node": ">=22"},
+  "devDependencies": {"wrangler": "4.163.0"}
+}

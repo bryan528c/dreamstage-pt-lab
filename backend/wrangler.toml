@@ -1,0 +1,23 @@
+name = "dreamstage-pt-lab-api"
+main = "worker.mjs"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["enable_request_signal"]
+workers_dev = true
+preview_urls = false
+
+[observability]
+enabled = false
+
+[vars]
+PAGES_ORIGIN = "https://bryan528c.github.io"
+OPENAI_FEEDBACK_MODEL = "gpt-6-luna"
+OPENAI_FEEDBACK_REASONING = "none"
+OPENAI_TRANSCRIBE_MODEL = "gpt-transcribe"
+
+[[durable_objects.bindings]]
+name = "ACCESS"
+class_name = "AccessGate"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["AccessGate"]
