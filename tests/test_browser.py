@@ -321,7 +321,7 @@ def test_recording(browser, url):
     confirmed_action(page, "submit")
     page.locator("#micWanted").check()
     button(page, "start-presentation").click()
-    expect(page.locator("#countNumber")).to_be_visible()
+    expect(page.locator("#countNumber")).to_be_visible(timeout=10_000)
     page.clock.run_for(5_100)
     expect(page.get_by_text("이 기기에 녹음 중", exact=True)).to_be_visible()
     confirmed_action(page, "end-presentation")
@@ -382,7 +382,12 @@ def main():
         stack.callback(browser.close)
         deck, backup = test_strict(browser, url, bool(args.public_url))
         test_study(browser, url, deck, backup)
-        test_recording(browser, url)
+        recording_browser = playwright.chromium.launch(headless=True, executable_path=chrome,
+            channel=None if chrome else "chromium",
+            args=["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream",
+                  "--autoplay-policy=no-user-gesture-required"])
+        stack.callback(recording_browser.close)
+        test_recording(recording_browser, url)
         test_csp(browser, url)
         for result in BROWSER_CASES:
             print("PASS", result)

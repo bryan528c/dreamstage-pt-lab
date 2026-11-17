@@ -27,7 +27,7 @@
 
 현재 배포 설정은 `backend/wrangler.toml`에 있습니다. `PAGES_ORIGIN`은 `https://bryan528c.github.io`입니다. CORS의 origin에는 저장소 경로가 포함되지 않습니다. Worker URL을 바꾼 경우 `PTLAB_API_URL`을 갱신한 뒤 Pages 워크플로를 실행합니다.
 
-1. Node.js 24 환경에서 `npm ci`를 실행합니다. Wrangler 인증이 처음이면 `npx wrangler login`으로 인증합니다.
+1. Node.js 24 환경에서 `npm ci`를 실행합니다. Wrangler 인증이 필요하면 `npx wrangler login --scopes account:read user:read workers:write workers_scripts:write`로 인증합니다. Windows 자격 증명 저장소를 쓰려면 `--use-keyring`을 추가합니다.
 2. `npm run deploy:api`로 배포합니다. 무료 SQLite Durable Object 마이그레이션이 함께 적용됩니다.
 3. Cloudflare의 **Workers & Pages → dreamstage-pt-lab-api → Settings → Variables and Secrets**에서 `ACCESS_PASSWORD`와 `OPENAI_API_KEY`를 각각 **Secret**으로 추가하고 적용합니다. `ACCESS_PASSWORD`는 본인만 아는 24자 이상 임의 비밀번호를 사용합니다. CLI로는 `npx wrangler secret put ACCESS_PASSWORD --config backend/wrangler.toml`과 `npx wrangler secret put OPENAI_API_KEY --config backend/wrangler.toml`이 각각 입력을 요청합니다.
 4. Pages에서 복기 화면을 연 뒤 AI 연결과 짧은 녹음 전사 1회, 피드백 1회로 해당 OpenAI 프로젝트의 모델 접근과 결제 설정을 확인합니다. 서버 상태 확인은 OpenAI를 호출하지 않습니다.
